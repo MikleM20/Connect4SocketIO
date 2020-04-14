@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/script.js"></script>
+
+    <link href="/style.css" rel="stylesheet" type ="text/css"/>
+    <title>Connect4</title>
+  </head>
+  <body>
+
+    <div id="homePage">
+      <div id="greet">Welcome Back</div>
+      <form id="nameForm">
+        <input type="text" id="who">
+        <input type="submit" value = "Change name"/>
+      </form>
+      <form id="joinForm">
+        <label>Private Room ID:</label>
+        <input type="text" id="privRoom">
+        <input type="submit" value = "Join Room"/>
+      </form>
+      <form id="privateForm">
+        <input type="submit" value = "Create Private Game"/>
+      </form>
+      <div id="nameFeedback"></div>
+      <div id="roomFeedback"></div>
+    </div>
+
+    <div id="gamePage">
+      <div id="game message"></div>
+      <div id="gameBoard">
+      </div>
+
+
+      <div>
+        <form id="theme1"></form>
+        <form id="theme2"></form>
+        <form id="theme3"></form>
+        <button type="submit" form="theme1">Default Theme</button>
+        <button type="submit" form="theme2">Dark Theme</button>
+        <button type="submit" form="theme3">Monochrome Theme</button>
+      </div>
+      
+    </div>
+  </body>
+</html>

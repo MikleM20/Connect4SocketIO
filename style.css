@@ -1,0 +1,20 @@
+body{
+    background-color: aqua;
+    text-align: center;
+}
+
+#gamePage{
+    display: none;
+}
+
+#homePage{
+    display: inline-block;
+}
+
+.dark{
+    background-color: #333;
+}
+
+.other{
+    background-color: #fff;
+}
