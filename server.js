@@ -241,3 +241,4 @@ const updateUserName = (currentUsername, newName) => {
 
 server.listen(4000);
 console.log("running");
+console.log("Listening port 4000.");
