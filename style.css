@@ -1,6 +1,6 @@
 body{
-    background-color: aqua;
     text-align: center;
+    font-size: 20px;
 }
 
 #gamePage{
@@ -15,6 +15,39 @@ body{
     background-color: #333;
 }
 
+#gameMessage{
+    margin: 5px;
+}
 .other{
     background-color: #fff;
+}
+
+#gameBoard{
+    background-color: yellow;
+    display: inline-block;
+}
+.col{
+    width: 70px;
+    height: 70px;
+    display: inline-block;
+    background-color: white;
+    border-radius: 50%;
+    margin: 5px;
+}
+
+.col.empty{
+    cursor: pointer;
+}
+
+.next-turn{
+    background-color: black;
+    opacity: .1;
+}
+
+.col.P1{
+    background-color: red;
+}
+
+.col.P2{
+    background-color: black;
 }

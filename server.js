@@ -1,6 +1,5 @@
 var express = require("express");
 var app = express();
-var path = require("path");
 var server = require("http").createServer(app);
 var io = require("socket.io")(server);
 
@@ -36,6 +35,19 @@ io.on("connection", function(socket) {
     //console.log("user disconnected");
   });
 
+  socket.on("move made", function(data){
+    socket.emit("not my turn");
+    socket.to(data.roomId).emit("your turn",{
+      col: data.moveCol,
+      row: data.moveRow
+    });
+  });
+
+  socket.on("you start", function(roomId){
+    socket.emit("not my turn");
+    socket.to(roomId).emit("You go first");
+  });
+
   socket.on("create room", function(roomId){
     socket.join(roomId);
     console.log(roomId);
@@ -49,7 +61,7 @@ io.on("connection", function(socket) {
       if(privateRooms[i] == roomId){
         privateRooms.splice(i,1);
         socket.join(roomId);
-        io.to(roomId).emit("someone joined", data.username);
+        socket.to(roomId).emit("someone joined", data.username);
         return;
       }
     }

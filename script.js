@@ -12,7 +12,94 @@ $(function() {
   let $theme2 = $("#theme2");
   let $theme3 = $("#theme3");
 
-  let currentUserInfo = { username: "", theme:"", currentRoom:"", opponent:""};
+  let currentUserInfo = { username: "", theme:"", currentRoom:"", opponent:"", playerNum:""};
+
+  function setupEventListeners(){
+    const $board = $('#gameBoard');
+
+    function findLastEmptyCell(col){
+      const cells = $(`.col[data-col='${col}']`);
+      for(let i=cells.length-1;i>=0; i--){
+        const $cell = $(cells[i]);
+        if($cell.hasClass('empty')){
+            return $cell;
+        }
+      }
+      return null;
+    }
+
+    $board.on('mouseenter', '.empty.col', function(){
+        const col = $(this).data('col');
+        const $lastEmptyCell = findLastEmptyCell(col);
+        $lastEmptyCell.addClass('next-turn');
+
+    })
+
+    $board.on('mouseleave', '.col', function(){
+        $('.col').removeClass('next-turn');
+    })
+
+    $board.on('click', '.col.empty', function(){
+      const col = $(this).data('col');
+      const $lastEmptyCell = findLastEmptyCell(col);
+      if($lastEmptyCell == null){return;}
+      $lastEmptyCell.removeClass('empty');
+      if(currentUserInfo.playerNum == "1"){
+        $lastEmptyCell.addClass('P1');
+      }
+      else{
+        $lastEmptyCell.addClass('P2');
+      }
+      //console.log("Col:"+$lastEmptyCell.data('col')+"Row:"+$lastEmptyCell.data('row'));
+      sendMove($lastEmptyCell.data('row'), $lastEmptyCell.data('col'));
+    })
+
+  }
+
+  function pauseEventListeners(){
+    const $board = $('#gameBoard');
+    //In case old event listener active, remove effects it would have had.
+    console.log("paused?");
+    $board.unbind('mouseenter');
+    $board.unbind('mouseleave');
+    $board.unbind('click');
+    var hoveredInPast = document.getElementsByClassName('next-turn');
+    for (var i = 0; i < hoveredInPast.length; i++) {
+      const hovered = $(hoveredInPast);
+      hovered.removeClass('next-turn');
+    }
+  }
+
+  function createGrid(){
+    const $board=$('#gameBoard');
+    $board.empty();
+    console.log("ran");
+    for(let row =0; row < 6; row++){
+      const $row = $('<div>')
+        .addClass('row');
+    
+      for(let col =0; col< 7  ; col++){
+          const $col= $('<div>')
+            .addClass('empty col')
+            .attr('data-col', col)
+            .attr('data-row', row);
+          $row.append($col);
+      }
+      $board.append($row);
+    }
+  }
+
+
+  function sendMove(row, col){
+    pauseEventListeners();
+    socket.emit("move made", {
+      moveCol: col,
+      moveRow: row,
+      roomId: currentUserInfo.currentRoom
+    });
+
+  }
+
 
   $joinForm.submit(function(e){
     e.preventDefault();
@@ -23,18 +110,64 @@ $(function() {
     });
   });
 
+
+  socket.on("your turn", function(data){
+    //$( "input[id][name$='man']" ).val( "only this one" );
+    console.log("Ran");
+    console.log(data.col+" "+data.row);
+    const cells = $(`.col[data-col='${data.col}']`);
+    for(let i=cells.length-1;i>=0; i--){
+      const $cell = $(cells[i]);
+      var rowValue = $cell.data('row');
+      console.log(rowValue);
+      console.log("i="+i);
+      if(rowValue == data.row){
+        $cell.removeClass('empty');
+        console.log($cell);
+        if(currentUserInfo.playerNum == 1){
+          $cell.addClass('P2');
+        }
+        else{
+          $cell.addClass('P1');
+        }     
+      }
+    }
+    checkWinner();
+    setupEventListeners();
+    
+
+  });
+
+  function checkWinner(){
+
+  }
+
+  socket.on("not my turn", function(){
+    document.getElementById("turnMessage").innerHTML = currentUserInfo.opponent+"'s Turn. Please Wait.";
+    pauseEventListeners();
+  });
+
+  socket.on("You go first", function(){
+    document.getElementById("turnMessage").innerHTML = "Hey "+currentUserInfo.username+", It's your turn.";
+  });
+
   socket.on("reply recieve", function(data){
     $home.css("display","none");
     console.log("Joined" +data.roomId);
     $gamePage.css("display","inline-block");
-    document.getElementById("game message").innerHTML = "Playing Against "+data.opponent+".<br>Opponent's Turn.";
+    document.getElementById("gameMessage").innerHTML = "Playing Against "+data.opponent+".";
     currentUserInfo.opponent = data.opponent;
-    currentUserInfo.opponent = data.roomId;
+    currentUserInfo.currentRoom = data.roomId;
+    currentUserInfo.playerNum = "2";
+    socket.emit("you start", currentUserInfo.currentRoom);
+    createGrid();
   });
 
   socket.on("someone joined", function(opponent){
-    document.getElementById("game message").innerHTML = "Playing Against "+opponent+".<br>Your Turn.";
+    document.getElementById("gameMessage").innerHTML = "Playing Against "+opponent+".";
     currentUserInfo.opponent = opponent;
+    currentUserInfo.playerNum = "1";
+    setupEventListeners();
     socket.emit("reply to join",{
       roomCode: currentUserInfo.currentRoom,
       username: currentUserInfo.username
@@ -46,8 +179,9 @@ $(function() {
     console.log(shareCode);
     currentUserInfo.currentRoom = shareCode;
     $gamePage.css("display","inline-block");
-    document.getElementById("game message").innerHTML = "Hello "+currentUserInfo.username+
-      ". Please get your frient to join RoomId:"+shareCode;
+    document.getElementById("gameMessage").innerHTML = "Hello "+currentUserInfo.username+
+      ".<br> Please get your friend to join RoomId:"+shareCode;
+      createGrid();
   });
 
   $createPrivate.submit(function(e){
@@ -211,4 +345,5 @@ $(function() {
     }
   }
   
+
 });
