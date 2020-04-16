@@ -1,6 +1,6 @@
+
 body{
     text-align: center;
-    font-size: 20px;
 }
 
 #gamePage{
@@ -9,34 +9,49 @@ body{
 
 #homePage{
     display: inline-block;
-}
-
-.dark{
-    background-color: #333;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    padding: 30px;
 }
 
 #gameMessage{
     margin: 5px;
 }
-.other{
-    background-color: #fff;
-}
 
 #gameBoard{
-    background-color: yellow;
+    background-color: #EFF407;
     display: inline-block;
+    padding: 5px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
-.col{
+#random{
+    margin-top:30px;
+}
+
+#gameBoard.dark{
+    background-color: #444;
+}
+
+#gameBoard.other{
+    background-color: #189AD3;
+}
+
+.gamecol{
     width: 70px;
     height: 70px;
     display: inline-block;
-    background-color: white;
+    background-color: #fff;
     border-radius: 50%;
     margin: 5px;
 }
 
-.col.empty{
+.gamecol.empty{
     cursor: pointer;
+}
+
+.dark > .gamerow > .empty{
+    background-color: #777;
 }
 
 .next-turn{
@@ -44,10 +59,61 @@ body{
     opacity: .1;
 }
 
-.col.P1{
-    background-color: red;
+.gamecol.P1{
+    background-color: #F4074E;
 }
 
-.col.P2{
-    background-color: black;
+.gamecol.P2{
+    background-color: #4F6CC4;
 }
+
+.dark > .gamerow > .P1{
+    background-color: #fff;
+}
+
+.dark > .gamerow > .P2{
+    background-color: #000;
+}
+.dark > .gamerow > .next-turn{
+    background-color: #07F434;
+    opacity: .3;
+}
+
+.other > .gamerow > .P1{
+    background-color: #71C7EC;
+}
+
+.other > .gamerow > .P2{
+    background-color: #005073;
+}
+.section{
+    border: black;
+    border-width: 2px;
+}
+
+input[type="text"] {
+    background-color: #FFF;
+    width: 75%;
+    font-size: 4vh;
+    text-align: center;
+}
+
+input[type="submit"] {
+    width: 75%;
+    font-size: 2vh;
+    margin-top: 10px;
+}
+h4{
+    font-weight: normal;
+}
+
+
+
+#gameMessage{
+    font-size: 2vh;
+}
+
+#turnMessage{
+    font-size: 2vh;
+}
+
