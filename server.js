@@ -1,11 +1,17 @@
 var express = require("express");
 var app = express();
 var server = require("http").createServer(app);
-var io = require("socket.io")(server);
+var io = require("socket.io").listen(server);
 
 //Array of rooms, will be removed from list once they are full
 var randomRooms = [];
 var privateRooms = [];
+
+
+
+server.listen(process.env.PORT || 4000);
+console.log("running");
+console.log("Listening port 4000.");
 
 app.use(express.static('.'));
 
@@ -237,8 +243,3 @@ const updateUserName = (currentUsername, newName) => {
   }
 };
 
-
-
-server.listen(4000);
-console.log("running");
-console.log("Listening port 4000.");

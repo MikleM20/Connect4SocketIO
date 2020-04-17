@@ -1,5 +1,5 @@
 $(function() {
-  const socket = io.connect('http://localhost:4000');
+  const socket = io.connect();
     
   //Some jQuery selectors that will be used
   let $nameForm = $('#nameForm');
